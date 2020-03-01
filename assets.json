@@ -1,10 +1,10 @@
 {
-  "vendors.js": "/static/js/vendors.bb74bb6e.js",
-  "vendors.js.map": "/static/js/vendors.f3bea933d9758a251bc1.js.map",
-  "app.js": "/static/js/app.f3bea933d9758a251bc1.js",
-  "app.js.map": "/static/js/app.f3bea933d9758a251bc1.js.map",
-  "src-test.css": "/static/css/src-test.f3bea933d9758a251bc1.css",
-  "src-test.js": "/static/js/src-test.2cd3ef42.js",
-  "src-test.js.map": "/static/js/src-test.f3bea933d9758a251bc1.js.map",
-  "index.html": "/index.html"
+  "vendors.js": "/react-interactive-timeline/static/js/vendors.11285433.js",
+  "vendors.js.map": "/react-interactive-timeline/static/js/vendors.1299cf8dc5951956feda.js.map",
+  "app.js": "/react-interactive-timeline/static/js/app.1299cf8dc5951956feda.js",
+  "app.js.map": "/react-interactive-timeline/static/js/app.1299cf8dc5951956feda.js.map",
+  "src-test.css": "/react-interactive-timeline/static/css/src-test.1299cf8dc5951956feda.css",
+  "src-test.js": "/react-interactive-timeline/static/js/src-test.2cd3ef42.js",
+  "src-test.js.map": "/react-interactive-timeline/static/js/src-test.1299cf8dc5951956feda.js.map",
+  "index.html": "/react-interactive-timeline/index.html"
 }
