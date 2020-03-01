@@ -6,7 +6,8 @@ export interface CalendarStep<ParsedDate, Units> {
   scale: number;
 }
 
-export interface DisplayStep<ParsedDate, Units> extends CalendarStep<ParsedDate, Units> {
+export interface DisplayStep<ParsedDate, Units>
+  extends CalendarStep<ParsedDate, Units> {
   offset: number;
   size: number;
 }
@@ -15,7 +16,10 @@ export interface CalendarZoomLevel<ParsedDate, Units> {
   unit: Units;
   duration: number;
   isMajorLevel: (mainLevel: CalendarZoomLevel<ParsedDate, Units>) => boolean;
-  getSteps: (startDate: ParsedDate, endDate: ParsedDate) => CalendarStep<ParsedDate, Units>[]
+  getSteps: (
+    startDate: ParsedDate,
+    endDate: ParsedDate
+  ) => CalendarStep<ParsedDate, Units>[];
 }
 
 export interface DisplayZoomLevel<ParsedDate, Units> {
@@ -36,7 +40,12 @@ export interface Calendar<InputDate, ParsedDate, InputDuration, Units> {
   zoomLevels: CalendarZoomLevel<ParsedDate, Units>[];
 }
 
-export interface TimelineContextContent<InputDate, ParsedDate, InputDuration, Units> {
+export interface TimelineContextContent<
+  InputDate,
+  ParsedDate,
+  InputDuration,
+  Units
+> {
   calendar: Calendar<InputDate, ParsedDate, InputDuration, Units>;
   stepLevels: DisplayZoomLevel<ParsedDate, Units>[];
   startDate: ParsedDate;
@@ -50,4 +59,9 @@ export interface TimelineContextContent<InputDate, ParsedDate, InputDuration, Un
   maxDuration?: number;
 }
 
-export const TimelineContext = React.createContext<TimelineContextContent<any, any, any, any> | null>(null);
+export const TimelineContext = React.createContext<TimelineContextContent<
+  any,
+  any,
+  any,
+  any
+> | null>(null);

@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "rollup -c -w",
-    "lint": "prettier",
+    "lint": "prettier --write 'src/**/*.{ts,tsx,css}'",
     "test": "cross-env CI=1 react-scripts-ts test --env=jsdom",
     "test:watch": "react-scripts-ts test --env=jsdom",
     "build": "rollup -c",
@@ -47,7 +47,9 @@
     "docz-plugin-css": "^0.11.0",
     "docz-theme-default": "^1.2.0",
     "gh-pages": "^2.2.0",
+    "husky": "^4.2.3",
     "prettier": "1.19.1",
+    "pretty-quick": "^2.0.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-scripts-ts": "^3.1.0",
@@ -65,5 +67,14 @@
   "files": [
     "dist",
     "src/typings.d.ts"
-  ]
+  ],
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged --pattern 'src/**/*.{ts,tsx,css}'"
+    }
+  }
 }

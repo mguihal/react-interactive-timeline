@@ -7,8 +7,15 @@ interface Props {
   renderer: (zoom: (zoom: number) => void) => JSX.Element;
 }
 
-const ZoomControl = <InputDate, ParsedDate, InputDuration, Units>(props: React.PropsWithChildren<Props>) => {
-  const timelineContext = useContext<TimelineContextContent<InputDate, ParsedDate, InputDuration, Units> | null>(TimelineContext);
+const ZoomControl = <InputDate, ParsedDate, InputDuration, Units>(
+  props: React.PropsWithChildren<Props>
+) => {
+  const timelineContext = useContext<TimelineContextContent<
+    InputDate,
+    ParsedDate,
+    InputDuration,
+    Units
+  > | null>(TimelineContext);
 
   return props.renderer((zoom: number) => {
     if (timelineContext) {

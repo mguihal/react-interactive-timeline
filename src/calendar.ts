@@ -1,4 +1,11 @@
-export type Units = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
+export type Units =
+  | 'millisecond'
+  | 'second'
+  | 'minute'
+  | 'hour'
+  | 'day'
+  | 'month'
+  | 'year';
 
 export type InputDate = string;
 export type ParsedDate = Date;
@@ -17,7 +24,7 @@ interface ZoomLevel {
   unit: Units;
   duration: number;
   isMajorLevel: (mainLevel: ZoomLevel) => boolean;
-  getSteps: (startDate: ParsedDate, endDate: ParsedDate) => Step[]
+  getSteps: (startDate: ParsedDate, endDate: ParsedDate) => Step[];
 }
 
 const SECOND_IN_MILLISECONDS = 1000;
@@ -27,7 +34,15 @@ const DAY_IN_MILLISECONDS = 24 * HOUR_IN_MILLISECONDS;
 const MONTH_IN_MILLISECONDS = 30 * DAY_IN_MILLISECONDS;
 const YEAR_IN_MILLISECONDS = 12 * MONTH_IN_MILLISECONDS;
 
-const units = ['millisecond', 'second', 'minute', 'hour', 'day', 'month', 'year'];
+const units = [
+  'millisecond',
+  'second',
+  'minute',
+  'hour',
+  'day',
+  'month',
+  'year',
+];
 
 function parse(minUnit: Units): (date: InputDate) => ParsedDate {
   return date => startOf(new Date(date), minUnit);
@@ -41,8 +56,12 @@ function parseDuration(duration: InputDuration): number {
   let milliseconds = 0;
 
   milliseconds += duration.millisecond ? duration.millisecond : 0;
-  milliseconds += duration.second ? duration.second * SECOND_IN_MILLISECONDS : 0;
-  milliseconds += duration.minute ? duration.minute * MINUTE_IN_MILLISECONDS : 0;
+  milliseconds += duration.second
+    ? duration.second * SECOND_IN_MILLISECONDS
+    : 0;
+  milliseconds += duration.minute
+    ? duration.minute * MINUTE_IN_MILLISECONDS
+    : 0;
   milliseconds += duration.hour ? duration.hour * HOUR_IN_MILLISECONDS : 0;
   milliseconds += duration.day ? duration.day * DAY_IN_MILLISECONDS : 0;
   milliseconds += duration.month ? duration.month * MONTH_IN_MILLISECONDS : 0;
@@ -80,7 +99,11 @@ function diff(dateA: ParsedDate, dateB: ParsedDate): number {
   return dateA.getTime() - dateB.getTime();
 }
 
-function add(date: ParsedDate, amount: number, unit: Units = 'millisecond'): ParsedDate {
+function add(
+  date: ParsedDate,
+  amount: number,
+  unit: Units = 'millisecond'
+): ParsedDate {
   let newDate = new Date(date.getTime());
 
   switch (unit) {
@@ -99,7 +122,10 @@ function add(date: ParsedDate, amount: number, unit: Units = 'millisecond'): Par
       const desiredMonth = date.getMonth() + amount;
       const lastDayOfMonth = new Date(date.getFullYear(), desiredMonth + 1, 0);
 
-      newDate.setMonth(desiredMonth, Math.min(lastDayOfMonth.getDate(), date.getDate()));
+      newDate.setMonth(
+        desiredMonth,
+        Math.min(lastDayOfMonth.getDate(), date.getDate())
+      );
       return newDate;
     case 'year':
       return add(date, amount * 12, 'month');
@@ -108,7 +134,11 @@ function add(date: ParsedDate, amount: number, unit: Units = 'millisecond'): Par
   }
 }
 
-function subtract(date: ParsedDate, amount: number, unit: Units = 'millisecond'): ParsedDate {
+function subtract(
+  date: ParsedDate,
+  amount: number,
+  unit: Units = 'millisecond'
+): ParsedDate {
   return add(date, -amount, unit);
 }
 
@@ -161,39 +191,87 @@ function get(date: ParsedDate, unit: Units): number {
 }
 
 function format(locale: string, minUnit: Units, maxUnit: Units) {
-  function internFormat(date: ParsedDate, unit?: Units, onlyUnit: boolean = false): string {
-
-    const monthLabels: {[locale: string]: string[]} = {
-      'en': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      'fr': ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+  function internFormat(
+    date: ParsedDate,
+    unit?: Units,
+    onlyUnit: boolean = false
+  ): string {
+    const monthLabels: { [locale: string]: string[] } = {
+      en: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ],
+      fr: [
+        'janv.',
+        'févr.',
+        'mars',
+        'avr.',
+        'mai',
+        'juin',
+        'juil.',
+        'août',
+        'sept.',
+        'oct.',
+        'nov.',
+        'déc.',
+      ],
     };
 
-    const padded = (u: number) => u < 10 ? `0${u}` : `${u}`;
-    const paddedMs = (u: number) => u < 10 ? `00${u}` : u < 100 ? `0${u}` : `${u}`;
+    const padded = (u: number) => (u < 10 ? `0${u}` : `${u}`);
+    const paddedMs = (u: number) =>
+      u < 10 ? `00${u}` : u < 100 ? `0${u}` : `${u}`;
 
     switch (unit) {
       case 'millisecond':
-        return onlyUnit ? `${date.getMilliseconds()}ms` : `${internFormat(date, 'second')}.${paddedMs(date.getMilliseconds())}`;
+        return onlyUnit
+          ? `${date.getMilliseconds()}ms`
+          : `${internFormat(date, 'second')}.${paddedMs(
+              date.getMilliseconds()
+            )}`;
       case 'second':
-        return onlyUnit ? `${padded(date.getSeconds())}s` : `${internFormat(date, 'minute')}:${padded(date.getSeconds())}`;
+        return onlyUnit
+          ? `${padded(date.getSeconds())}s`
+          : `${internFormat(date, 'minute')}:${padded(date.getSeconds())}`;
       case 'minute':
         return `${padded(date.getHours())}:${padded(date.getMinutes())}`;
       case 'hour':
-        return onlyUnit ? `${padded(date.getHours())}:00` : `${padded(date.getHours())}h`;
+        return onlyUnit
+          ? `${padded(date.getHours())}:00`
+          : `${padded(date.getHours())}h`;
       case 'day':
-        return onlyUnit ? `${padded(date.getDate())}` : `${padded(date.getDate())} ${internFormat(date, 'month')}`;
+        return onlyUnit
+          ? `${padded(date.getDate())}`
+          : `${padded(date.getDate())} ${internFormat(date, 'month')}`;
       case 'month':
         const formattedMonth = monthLabels[locale][date.getMonth()];
-        return onlyUnit ? `${formattedMonth}` : `${formattedMonth} ${internFormat(date, 'year')}`;
+        return onlyUnit
+          ? `${formattedMonth}`
+          : `${formattedMonth} ${internFormat(date, 'year')}`;
       case 'year':
         return `${date.getFullYear()}`;
       default:
-        const part1 = (units.indexOf(minUnit) > units.indexOf('day')) ? `${internFormat(date, minUnit)}` : `${internFormat(date, 'day')}`;
-        const part2 = (units.indexOf(minUnit) < units.indexOf('day')) ? ` - ${internFormat(date, minUnit)}` : '';
+        const part1 =
+          units.indexOf(minUnit) > units.indexOf('day')
+            ? `${internFormat(date, minUnit)}`
+            : `${internFormat(date, 'day')}`;
+        const part2 =
+          units.indexOf(minUnit) < units.indexOf('day')
+            ? ` - ${internFormat(date, minUnit)}`
+            : '';
 
         return `${part1}${part2}`;
     }
-  };
+  }
 
   return internFormat;
 }
@@ -205,9 +283,13 @@ function getSteps(unit: Units, n: number) {
     let offsetUnits = get(startDate, unit);
 
     if (unit === 'day') {
-      const correctedStartDate = subtract(startDate, (n > 1 && get(startDate, unit) >= 30) ? n : 0, unit); // Fix to hide days 30 and 31
+      const correctedStartDate = subtract(
+        startDate,
+        n > 1 && get(startDate, unit) >= 30 ? n : 0,
+        unit
+      ); // Fix to hide days 30 and 31
       const moduloDay = get(correctedStartDate, unit) < n ? 1 : 0; // Fix to round to 1st day of month
-      offsetUnits = get(correctedStartDate, unit) - moduloDay
+      offsetUnits = get(correctedStartDate, unit) - moduloDay;
     }
 
     let date = subtract(startOf(startDate, unit), offsetUnits % n, unit);
@@ -230,7 +312,7 @@ function getSteps(unit: Units, n: number) {
       date = add(date, durationToAdd, unit);
 
       if (unit === 'day') {
-        date = add(date, (n > 1 && get(date, unit) >= 30) ? 1: 0, 'month'); // Fix to hide days 30 and 31
+        date = add(date, n > 1 && get(date, unit) >= 30 ? 1 : 0, 'month'); // Fix to hide days 30 and 31
 
         if (get(date, 'month') !== previousMonth) {
           date = startOf(date, 'month');
@@ -253,62 +335,187 @@ function isImportantStep(step: Step) {
 function getZoomLevels(minUnit: Units, maxUnit: Units) {
   const zoomLevels: ZoomLevel[] = [];
 
-  if (units.indexOf(minUnit) <= units.indexOf('millisecond') && units.indexOf(maxUnit) >= units.indexOf('millisecond')) {
+  if (
+    units.indexOf(minUnit) <= units.indexOf('millisecond') &&
+    units.indexOf(maxUnit) >= units.indexOf('millisecond')
+  ) {
     zoomLevels.push(
-      {unit: 'millisecond', duration: 1, isMajorLevel: () => false, getSteps: getSteps('millisecond', 1)},
-      {unit: 'millisecond', duration: 100, isMajorLevel: () => false, getSteps: getSteps('millisecond', 100)},
-      {unit: 'millisecond', duration: 500, isMajorLevel: () => false, getSteps: getSteps('millisecond', 500)}
+      {
+        unit: 'millisecond',
+        duration: 1,
+        isMajorLevel: () => false,
+        getSteps: getSteps('millisecond', 1),
+      },
+      {
+        unit: 'millisecond',
+        duration: 100,
+        isMajorLevel: () => false,
+        getSteps: getSteps('millisecond', 100),
+      },
+      {
+        unit: 'millisecond',
+        duration: 500,
+        isMajorLevel: () => false,
+        getSteps: getSteps('millisecond', 500),
+      }
     );
   }
 
-  if (units.indexOf(minUnit) <= units.indexOf('second') && units.indexOf(maxUnit) >= units.indexOf('second')) {
+  if (
+    units.indexOf(minUnit) <= units.indexOf('second') &&
+    units.indexOf(maxUnit) >= units.indexOf('second')
+  ) {
     zoomLevels.push(
-      {unit: 'second', duration: 1 * SECOND_IN_MILLISECONDS, isMajorLevel: (mainLevel) => mainLevel.unit === 'millisecond', getSteps: getSteps('second', 1)},
-      {unit: 'second', duration: 5 * SECOND_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('second', 5)},
-      {unit: 'second', duration: 10 * SECOND_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('second', 10)},
-      {unit: 'second', duration: 30 * SECOND_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('second', 30)}
+      {
+        unit: 'second',
+        duration: 1 * SECOND_IN_MILLISECONDS,
+        isMajorLevel: mainLevel => mainLevel.unit === 'millisecond',
+        getSteps: getSteps('second', 1),
+      },
+      {
+        unit: 'second',
+        duration: 5 * SECOND_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('second', 5),
+      },
+      {
+        unit: 'second',
+        duration: 10 * SECOND_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('second', 10),
+      },
+      {
+        unit: 'second',
+        duration: 30 * SECOND_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('second', 30),
+      }
     );
   }
 
-  if (units.indexOf(minUnit) <= units.indexOf('minute') && units.indexOf(maxUnit) >= units.indexOf('minute')) {
+  if (
+    units.indexOf(minUnit) <= units.indexOf('minute') &&
+    units.indexOf(maxUnit) >= units.indexOf('minute')
+  ) {
     zoomLevels.push(
-      {unit: 'minute', duration: 1 * MINUTE_IN_MILLISECONDS, isMajorLevel: (mainLevel) => mainLevel.unit === 'second', getSteps: getSteps('minute', 1)},
-      {unit: 'minute', duration: 5 * MINUTE_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('minute', 5)},
-      {unit: 'minute', duration: 10 * MINUTE_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('minute', 10)},
-      {unit: 'minute', duration: 30 * MINUTE_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('minute', 30)}
+      {
+        unit: 'minute',
+        duration: 1 * MINUTE_IN_MILLISECONDS,
+        isMajorLevel: mainLevel => mainLevel.unit === 'second',
+        getSteps: getSteps('minute', 1),
+      },
+      {
+        unit: 'minute',
+        duration: 5 * MINUTE_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('minute', 5),
+      },
+      {
+        unit: 'minute',
+        duration: 10 * MINUTE_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('minute', 10),
+      },
+      {
+        unit: 'minute',
+        duration: 30 * MINUTE_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('minute', 30),
+      }
     );
   }
 
-  if (units.indexOf(minUnit) <= units.indexOf('hour') && units.indexOf(maxUnit) >= units.indexOf('hour')) {
+  if (
+    units.indexOf(minUnit) <= units.indexOf('hour') &&
+    units.indexOf(maxUnit) >= units.indexOf('hour')
+  ) {
     zoomLevels.push(
-      {unit: 'hour', duration: 1 * HOUR_IN_MILLISECONDS, isMajorLevel: (mainLevel) => mainLevel.unit === 'minute', getSteps: getSteps('hour', 1)},
-      {unit: 'hour', duration: 3 * HOUR_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('hour', 3)},
-      {unit: 'hour', duration: 6 * HOUR_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('hour', 6)}
+      {
+        unit: 'hour',
+        duration: 1 * HOUR_IN_MILLISECONDS,
+        isMajorLevel: mainLevel => mainLevel.unit === 'minute',
+        getSteps: getSteps('hour', 1),
+      },
+      {
+        unit: 'hour',
+        duration: 3 * HOUR_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('hour', 3),
+      },
+      {
+        unit: 'hour',
+        duration: 6 * HOUR_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('hour', 6),
+      }
     );
   }
 
-  if (units.indexOf(minUnit) <= units.indexOf('day') && units.indexOf(maxUnit) >= units.indexOf('day')) {
+  if (
+    units.indexOf(minUnit) <= units.indexOf('day') &&
+    units.indexOf(maxUnit) >= units.indexOf('day')
+  ) {
     zoomLevels.push(
-      {unit: 'day', duration: 1 * DAY_IN_MILLISECONDS, isMajorLevel: (mainLevel) => ['hour', 'minute', 'second', 'millisecond'].includes(mainLevel.unit), getSteps: getSteps('day', 1)},
-      {unit: 'day', duration: 5 * DAY_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('day', 5)},
-      {unit: 'day', duration: 10 * DAY_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('day', 10)}
+      {
+        unit: 'day',
+        duration: 1 * DAY_IN_MILLISECONDS,
+        isMajorLevel: mainLevel =>
+          ['hour', 'minute', 'second', 'millisecond'].includes(mainLevel.unit),
+        getSteps: getSteps('day', 1),
+      },
+      {
+        unit: 'day',
+        duration: 5 * DAY_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('day', 5),
+      },
+      {
+        unit: 'day',
+        duration: 10 * DAY_IN_MILLISECONDS,
+        isMajorLevel: () => false,
+        getSteps: getSteps('day', 10),
+      }
     );
   }
 
-  if (units.indexOf(minUnit) <= units.indexOf('month') && units.indexOf(maxUnit) >= units.indexOf('month')) {
+  if (
+    units.indexOf(minUnit) <= units.indexOf('month') &&
+    units.indexOf(maxUnit) >= units.indexOf('month')
+  ) {
     for (const i of [1, 2, 4, 6]) {
-      zoomLevels.push(
-        {unit: 'month', duration: i * MONTH_IN_MILLISECONDS, isMajorLevel: (mainLevel) => mainLevel.unit === 'day' && i === 1, getSteps: getSteps('month', i)}
-      );
+      zoomLevels.push({
+        unit: 'month',
+        duration: i * MONTH_IN_MILLISECONDS,
+        isMajorLevel: mainLevel => mainLevel.unit === 'day' && i === 1,
+        getSteps: getSteps('month', i),
+      });
     }
   }
 
-  if (units.indexOf(minUnit) <= units.indexOf('year') && units.indexOf(maxUnit) >= units.indexOf('year')) {
+  if (
+    units.indexOf(minUnit) <= units.indexOf('year') &&
+    units.indexOf(maxUnit) >= units.indexOf('year')
+  ) {
     for (const i of [1, 10, 100, 1000]) {
       zoomLevels.push(
-        {unit: 'year', duration: i * YEAR_IN_MILLISECONDS, isMajorLevel: (mainLevel) => mainLevel.unit === 'month' && i === 1, getSteps: getSteps('year', i)},
-        {unit: 'year', duration: 2 * i * YEAR_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('year', 2*i)},
-        {unit: 'year', duration: 5 * i * YEAR_IN_MILLISECONDS, isMajorLevel: () => false, getSteps: getSteps('year', 5*i)}
+        {
+          unit: 'year',
+          duration: i * YEAR_IN_MILLISECONDS,
+          isMajorLevel: mainLevel => mainLevel.unit === 'month' && i === 1,
+          getSteps: getSteps('year', i),
+        },
+        {
+          unit: 'year',
+          duration: 2 * i * YEAR_IN_MILLISECONDS,
+          isMajorLevel: () => false,
+          getSteps: getSteps('year', 2 * i),
+        },
+        {
+          unit: 'year',
+          duration: 5 * i * YEAR_IN_MILLISECONDS,
+          isMajorLevel: () => false,
+          getSteps: getSteps('year', 5 * i),
+        }
       );
     }
   }
@@ -316,7 +523,11 @@ function getZoomLevels(minUnit: Units, maxUnit: Units) {
   return zoomLevels;
 }
 
-export default (locale: string = 'en', minUnit: Units = 'millisecond', maxUnit: Units = 'year') => ({
+export default (
+  locale: string = 'en',
+  minUnit: Units = 'millisecond',
+  maxUnit: Units = 'year'
+) => ({
   parse: parse(minUnit),
   unparse,
   parseDuration,

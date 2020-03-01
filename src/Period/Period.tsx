@@ -14,9 +14,14 @@ export type EventRefs = {
   containerRef: React.RefObject<HTMLDivElement>;
   barSizeRef: React.RefObject<HTMLDivElement>;
   labelSizeRef: React.RefObject<HTMLDivElement>;
-}
+};
 
-type PeriodPosition = 'outside' | 'inside' | 'headOnly' | 'tailOnly' | 'cropped';
+type PeriodPosition =
+  | 'outside'
+  | 'inside'
+  | 'headOnly'
+  | 'tailOnly'
+  | 'cropped';
 
 export interface PeriodVariantProps {
   label: string;
@@ -38,16 +43,36 @@ interface Props<InputDate> {
   fullHeight?: boolean;
 }
 
-const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(props: Props<InputDate>) => {
+const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(
+  props: Props<InputDate>
+) => {
   const themeContext = useContext<Theme>(ThemeContext);
-  const timelineContext = useContext<TimelineContextContent<InputDate, ParsedDate, InputDuration, Units> | null>(TimelineContext);
+  const timelineContext = useContext<TimelineContextContent<
+    InputDate,
+    ParsedDate,
+    InputDuration,
+    Units
+  > | null>(TimelineContext);
 
   if (!timelineContext) {
     return null;
   }
 
-  const { startDate, endDate, label, className, color, component, sizeRefs, fullHeight } = props;
-  const { startDate: timelineStartDate, endDate: timelineEndDate, calendar } = timelineContext;
+  const {
+    startDate,
+    endDate,
+    label,
+    className,
+    color,
+    component,
+    sizeRefs,
+    fullHeight,
+  } = props;
+  const {
+    startDate: timelineStartDate,
+    endDate: timelineEndDate,
+    calendar,
+  } = timelineContext;
 
   const parsedStartDate = calendar.parse(startDate);
   const parsedEndDate = calendar.parse(endDate);
@@ -58,22 +83,30 @@ const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(props: Prop
   }
 
   const timelineDuration = calendar.diff(timelineEndDate, timelineStartDate);
-  const periodStartDateOffset = calendar.diff(parsedStartDate, timelineStartDate);
+  const periodStartDateOffset = calendar.diff(
+    parsedStartDate,
+    timelineStartDate
+  );
   const periodEndDateOffset = calendar.diff(parsedEndDate, timelineStartDate);
 
-  const offsetLeft = periodStartDateOffset / timelineDuration * 100.0;
-  const width = (periodEndDateOffset - periodStartDateOffset) / timelineDuration * 100.0;
+  const offsetLeft = (periodStartDateOffset / timelineDuration) * 100.0;
+  const width =
+    ((periodEndDateOffset - periodStartDateOffset) / timelineDuration) * 100.0;
 
   if (!sizeRefs) {
     return null;
   }
 
   const periodPosition =
-    (offsetLeft < 0 && offsetLeft + width > 0) ? 'tailOnly' :
-    (offsetLeft >= 0 && offsetLeft + width <= 100) ? 'inside' :
-    (offsetLeft < 100 && offsetLeft + width > 100) ? 'headOnly' :
-    (offsetLeft < 0 && offsetLeft + width > 100) ? 'cropped' :
-    'outside';
+    offsetLeft < 0 && offsetLeft + width > 0
+      ? 'tailOnly'
+      : offsetLeft >= 0 && offsetLeft + width <= 100
+      ? 'inside'
+      : offsetLeft < 100 && offsetLeft + width > 100
+      ? 'headOnly'
+      : offsetLeft < 0 && offsetLeft + width > 100
+      ? 'cropped'
+      : 'outside';
 
   let DefaultPeriod: React.FunctionComponent<PeriodVariantProps> = LabelAbovePeriod;
 

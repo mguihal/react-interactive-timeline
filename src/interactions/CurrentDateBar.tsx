@@ -10,35 +10,50 @@ const cx = classnames.bind(styles);
 
 const CurrentDateBar = <InputDate, ParsedDate, InputDuration, Units>() => {
   const themeContext = useContext<Theme>(ThemeContext);
-  const timelineContext = useContext<TimelineContextContent<InputDate, ParsedDate, InputDuration, Units> | null>(TimelineContext);
+  const timelineContext = useContext<TimelineContextContent<
+    InputDate,
+    ParsedDate,
+    InputDuration,
+    Units
+  > | null>(TimelineContext);
   const [currentDate, setCurrentDate] = useState<ParsedDate>();
 
-  const onMouseMove = useCallback((event: MouseEvent) => {
-    if (!timelineContext || !timelineContext.timelineRef || !timelineContext.timelineRef.current) {
-      return null;
-    }
+  const onMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (
+        !timelineContext ||
+        !timelineContext.timelineRef ||
+        !timelineContext.timelineRef.current
+      ) {
+        return null;
+      }
 
-    const { startDate, endDate, calendar } = timelineContext;
-    const timelineBounds = timelineContext.timelineRef.current.getBoundingClientRect();
+      const { startDate, endDate, calendar } = timelineContext;
+      const timelineBounds = timelineContext.timelineRef.current.getBoundingClientRect();
 
-    const distance = event.clientX - timelineBounds.left;
+      const distance = event.clientX - timelineBounds.left;
 
-    const totalDuration = calendar.diff(endDate, startDate);
-    const duration = totalDuration * (distance / timelineBounds.width);
+      const totalDuration = calendar.diff(endDate, startDate);
+      const duration = totalDuration * (distance / timelineBounds.width);
 
-    setCurrentDate(calendar.add(startDate, duration));
-
-  }, [timelineContext]);
+      setCurrentDate(calendar.add(startDate, duration));
+    },
+    [timelineContext]
+  );
 
   useEffect(() => {
-    if (timelineContext && timelineContext.timelineRef && timelineContext.timelineRef.current) {
+    if (
+      timelineContext &&
+      timelineContext.timelineRef &&
+      timelineContext.timelineRef.current
+    ) {
       const ref = timelineContext.timelineRef.current;
 
       ref.addEventListener('mousemove', onMouseMove);
 
       return () => {
         ref.removeEventListener('mousemove', onMouseMove);
-      }
+      };
     }
   }, [timelineContext, onMouseMove]);
 
@@ -48,8 +63,10 @@ const CurrentDateBar = <InputDate, ParsedDate, InputDuration, Units>() => {
 
   const { startDate, endDate, calendar } = timelineContext;
   const timelineDuration = calendar.diff(endDate, startDate);
-  const currentDateDuration = currentDate ? calendar.diff(currentDate, startDate) : 0;
-  const offsetLeft = currentDateDuration / timelineDuration * 100.0;
+  const currentDateDuration = currentDate
+    ? calendar.diff(currentDate, startDate)
+    : 0;
+  const offsetLeft = (currentDateDuration / timelineDuration) * 100.0;
 
   return (
     <div

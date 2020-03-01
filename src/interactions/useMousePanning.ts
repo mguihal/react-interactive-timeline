@@ -5,10 +5,17 @@ import { panParsedTimeline } from '.';
 
 export default function usePanning<InputDate, ParsedDate, InputDuration, Units>(
   panningEnabled: boolean,
-  timelineContext: TimelineContextContent<InputDate, ParsedDate, InputDuration, Units>,
-  timelineRef: React.RefObject<HTMLDivElement>,
+  timelineContext: TimelineContextContent<
+    InputDate,
+    ParsedDate,
+    InputDuration,
+    Units
+  >,
+  timelineRef: React.RefObject<HTMLDivElement>
 ) {
-  const [panningStartPosition, setPanningStartPosition] = useState<number | null>(null);
+  const [panningStartPosition, setPanningStartPosition] = useState<
+    number | null
+  >(null);
 
   const onMouseDown = useCallback((event: MouseEvent) => {
     setPanningStartPosition(event.clientX);
@@ -18,17 +25,24 @@ export default function usePanning<InputDate, ParsedDate, InputDuration, Units>(
     setPanningStartPosition(null);
   }, []);
 
-  const onMouseMove = useCallback((event: MouseEvent) => {
-    if (panningStartPosition !== null && timelineRef && timelineRef.current) {
-      const distance = panningStartPosition - event.clientX;
+  const onMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (panningStartPosition !== null && timelineRef && timelineRef.current) {
+        const distance = panningStartPosition - event.clientX;
 
-      const totalDuration = timelineContext.calendar.diff(timelineContext.endDate, timelineContext.startDate);
-      const duration = totalDuration * (distance / timelineRef.current.offsetWidth);
+        const totalDuration = timelineContext.calendar.diff(
+          timelineContext.endDate,
+          timelineContext.startDate
+        );
+        const duration =
+          totalDuration * (distance / timelineRef.current.offsetWidth);
 
-      panParsedTimeline(timelineContext, duration);
-      setPanningStartPosition(event.clientX);
-    }
-  }, [panningStartPosition, timelineContext, timelineRef]);
+        panParsedTimeline(timelineContext, duration);
+        setPanningStartPosition(event.clientX);
+      }
+    },
+    [panningStartPosition, timelineContext, timelineRef]
+  );
 
   useEffect(() => {
     if (panningEnabled && timelineRef && timelineRef.current) {
@@ -44,7 +58,7 @@ export default function usePanning<InputDate, ParsedDate, InputDuration, Units>(
         ref.removeEventListener('mousemove', onMouseMove);
         ref.removeEventListener('mouseup', onMouseUp);
         ref.removeEventListener('mouseleave', onMouseUp);
-      }
+      };
     }
   }, [panningEnabled, timelineRef, onMouseDown, onMouseMove, onMouseUp]);
 }

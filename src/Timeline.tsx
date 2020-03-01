@@ -10,11 +10,7 @@ import {
   DisplayStep,
 } from './context';
 
-import {
-  Theme,
-  ThemeContext,
-  defaultTheme,
-} from './theme';
+import { Theme, ThemeContext, defaultTheme } from './theme';
 
 import defaultCalendar from './calendar';
 
@@ -35,22 +31,25 @@ import styles from './Timeline.module.css';
 
 const cx = classnames.bind(styles);
 
-interface Props<InputDate, ParsedDate, InputDuration, Units> extends React.HTMLAttributes<HTMLDivElement> {
+interface Props<InputDate, ParsedDate, InputDuration, Units>
+  extends React.HTMLAttributes<HTMLDivElement> {
   startDate: InputDate;
   endDate: InputDate;
   className?: string;
   stepMinWidth: string | number;
   minDate?: InputDate;
   maxDate?: InputDate;
-  minDuration?: InputDuration
-  maxDuration?: InputDuration
+  minDuration?: InputDuration;
+  maxDuration?: InputDuration;
   mousePanning: boolean;
   calendar: Calendar<InputDate, ParsedDate, InputDuration, Units>;
-  theme: Theme
+  theme: Theme;
 }
 
 const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
-  props: React.PropsWithChildren<Props<InputDate, ParsedDate, InputDuration, Units>>
+  props: React.PropsWithChildren<
+    Props<InputDate, ParsedDate, InputDuration, Units>
+  >
 ) => {
   const {
     calendar,
@@ -71,13 +70,15 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
   const containerRef = React.createRef<HTMLDivElement>();
   const [containerWidth, setContainerWidth] = useState(1);
 
-  const [parsedStartDate, setParsedStartDate] = useState(calendar.parse(startDate));
+  const [parsedStartDate, setParsedStartDate] = useState(
+    calendar.parse(startDate)
+  );
   const [parsedEndDate, setParsedEndDate] = useState(calendar.parse(endDate));
   const previousDateValues = useRef({ startDate, endDate });
 
   const getParsedStepMinWidth = useCallback(() => {
     const unit = String(stepMinWidth).indexOf('%') !== -1 ? '%' : 'px';
-    const value = parseFloat((stepMinWidth) as string);
+    const value = parseFloat(stepMinWidth as string);
 
     if (value <= 0) {
       console.error('The stepMinWidth has zero or negative value');
@@ -85,46 +86,71 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
 
     return {
       value: Math.max(0, value),
-      unit
+      unit,
     };
   }, [stepMinWidth]);
 
-  const computeStepsPosition = useCallback((steps: CalendarStep<ParsedDate, Units>[], startDate: ParsedDate, duration: number) => {
-    let lastOffset: number | null = null;
+  const computeStepsPosition = useCallback(
+    (
+      steps: CalendarStep<ParsedDate, Units>[],
+      startDate: ParsedDate,
+      duration: number
+    ) => {
+      let lastOffset: number | null = null;
 
-    return steps.reduceRight<DisplayStep<ParsedDate, Units>[]>((acc, step) => {
-      const offset = calendar.diff(step.date, startDate) / duration * 100;
-      const size = lastOffset !== null ? lastOffset - offset : null;
+      return steps.reduceRight<DisplayStep<ParsedDate, Units>[]>(
+        (acc, step) => {
+          const offset = (calendar.diff(step.date, startDate) / duration) * 100;
+          const size = lastOffset !== null ? lastOffset - offset : null;
 
-      lastOffset = offset;
+          lastOffset = offset;
 
-      return size !== null ? [{ ...step, offset, size }, ...acc] : acc;
-    }, []);
-  }, [calendar]);
+          return size !== null ? [{ ...step, offset, size }, ...acc] : acc;
+        },
+        []
+      );
+    },
+    [calendar]
+  );
 
-  const computeStepLevels = useCallback((startDate: ParsedDate, endDate: ParsedDate) => {
-    const duration = calendar.diff(endDate, startDate);
+  const computeStepLevels = useCallback(
+    (startDate: ParsedDate, endDate: ParsedDate) => {
+      const duration = calendar.diff(endDate, startDate);
 
-    const parsedStepMinWidth = getParsedStepMinWidth();
-    const maxSteps = parsedStepMinWidth.unit === '%' ?
-      100 / parsedStepMinWidth.value :
-      containerWidth / parsedStepMinWidth.value;
+      const parsedStepMinWidth = getParsedStepMinWidth();
+      const maxSteps =
+        parsedStepMinWidth.unit === '%'
+          ? 100 / parsedStepMinWidth.value
+          : containerWidth / parsedStepMinWidth.value;
 
-    const stepMinDuration = duration / maxSteps;
+      const stepMinDuration = duration / maxSteps;
 
-    const [ chosenMainLevel, ...chosenSecondaryLevels ] = calendar.zoomLevels.filter(zoomLevel => {
-      return stepMinDuration < zoomLevel.duration;
-    });
+      const [
+        chosenMainLevel,
+        ...chosenSecondaryLevels
+      ] = calendar.zoomLevels.filter(zoomLevel => {
+        return stepMinDuration < zoomLevel.duration;
+      });
 
-    const mainLevel = chosenMainLevel ? chosenMainLevel : calendar.zoomLevels[calendar.zoomLevels.length - 1];
-    const secondaryLevels = chosenSecondaryLevels.filter(zoomLevel => zoomLevel.isMajorLevel(mainLevel));
+      const mainLevel = chosenMainLevel
+        ? chosenMainLevel
+        : calendar.zoomLevels[calendar.zoomLevels.length - 1];
+      const secondaryLevels = chosenSecondaryLevels.filter(zoomLevel =>
+        zoomLevel.isMajorLevel(mainLevel)
+      );
 
-    return [mainLevel, ...secondaryLevels].map(level => {
-      return {
-        steps: computeStepsPosition(level.getSteps(startDate, endDate), startDate, duration),
-      };
-    });
-  }, [calendar, computeStepsPosition, containerWidth, getParsedStepMinWidth]);
+      return [mainLevel, ...secondaryLevels].map(level => {
+        return {
+          steps: computeStepsPosition(
+            level.getSteps(startDate, endDate),
+            startDate,
+            duration
+          ),
+        };
+      });
+    },
+    [calendar, computeStepsPosition, containerWidth, getParsedStepMinWidth]
+  );
 
   const onResize = useCallback((width: number) => {
     setContainerWidth(width);
@@ -147,12 +173,21 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
   const parsedMinDate = minDate ? calendar.parse(minDate) : undefined;
   const parsedMaxDate = maxDate ? calendar.parse(maxDate) : undefined;
 
-  const parsedMinDuration = minDuration ? calendar.parseDuration(minDuration) : undefined;
-  const parsedMaxDuration = maxDuration ? calendar.parseDuration(maxDuration) : undefined;
+  const parsedMinDuration = minDuration
+    ? calendar.parseDuration(minDuration)
+    : undefined;
+  const parsedMaxDuration = maxDuration
+    ? calendar.parseDuration(maxDuration)
+    : undefined;
 
   const stepLevels = computeStepLevels(parsedStartDate, parsedEndDate);
 
-  const timelineContext: TimelineContextContent<InputDate, ParsedDate, InputDuration, Units> = {
+  const timelineContext: TimelineContextContent<
+    InputDate,
+    ParsedDate,
+    InputDuration,
+    Units
+  > = {
     calendar,
     stepLevels,
     startDate: parsedStartDate,
@@ -183,13 +218,19 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
     return null;
   }
 
-  if (parsedMinDuration && parsedMaxDuration && parsedMinDuration > parsedMaxDuration) {
+  if (
+    parsedMinDuration &&
+    parsedMaxDuration &&
+    parsedMinDuration > parsedMaxDuration
+  ) {
     console.error('The minDuration is bigger than the maxDuration');
     return null;
   }
 
   if (parsedMinDuration && parsedMinDuration < calendar.getMinimumDuration()) {
-    console.error('The minDuration is lesser than the calendar minimum duration');
+    console.error(
+      'The minDuration is lesser than the calendar minimum duration'
+    );
     return null;
   }
 

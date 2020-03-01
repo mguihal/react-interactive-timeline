@@ -16,9 +16,16 @@ interface Props<InputDate> {
   sizeRefs?: EventRefs;
 }
 
-const TimelineEvent = <InputDate, ParsedDate, InputDuration, Units>(props: Props<InputDate>) => {
+const TimelineEvent = <InputDate, ParsedDate, InputDuration, Units>(
+  props: Props<InputDate>
+) => {
   const themeContext = useContext<Theme>(ThemeContext);
-  const timelineContext = useContext<TimelineContextContent<InputDate, ParsedDate, InputDuration, Units> | null>(TimelineContext);
+  const timelineContext = useContext<TimelineContextContent<
+    InputDate,
+    ParsedDate,
+    InputDuration,
+    Units
+  > | null>(TimelineContext);
 
   const { label, date, className, color, component, sizeRefs } = props;
 
@@ -27,7 +34,10 @@ const TimelineEvent = <InputDate, ParsedDate, InputDuration, Units>(props: Props
   }
 
   const parsedDate = timelineContext.calendar.parse(date);
-  const endDate = timelineContext.calendar.add(parsedDate, timelineContext.calendar.getMinimumDuration());
+  const endDate = timelineContext.calendar.add(
+    parsedDate,
+    timelineContext.calendar.getMinimumDuration()
+  );
 
   let DefaultPeriod: React.FunctionComponent<PeriodVariantProps> = LabelAboveEvent;
 
