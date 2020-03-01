@@ -4,7 +4,6 @@ declare module '*.css' {
 }
 
 declare module 'react-interactive-timeline' {
-
   // Context
 
   interface CalendarStep<ParsedDate, Units> {
@@ -17,7 +16,10 @@ declare module 'react-interactive-timeline' {
     unit: Units;
     duration: number;
     isMajorLevel: (mainLevel: CalendarZoomLevel<ParsedDate, Units>) => boolean;
-    getSteps: (startDate: ParsedDate, endDate: ParsedDate) => CalendarStep<ParsedDate, Units>[]
+    getSteps: (
+      startDate: ParsedDate,
+      endDate: ParsedDate
+    ) => CalendarStep<ParsedDate, Units>[];
   }
 
   interface Calendar<InputDate, ParsedDate, InputDuration, Units> {
@@ -48,38 +50,63 @@ declare module 'react-interactive-timeline' {
     eventColor: string;
   }
 
-  interface TimelineProps<InputDate, ParsedDate, InputDuration, Units> extends React.HTMLAttributes<HTMLDivElement> {
+  interface TimelineProps<InputDate, ParsedDate, InputDuration, Units>
+    extends React.HTMLAttributes<HTMLDivElement> {
     startDate: InputDate;
     endDate: InputDate;
     className?: string;
     stepMinWidth?: string | number;
     minDate?: InputDate;
     maxDate?: InputDate;
-    minDuration?: InputDuration
-    maxDuration?: InputDuration
+    minDuration?: InputDuration;
+    maxDuration?: InputDuration;
     mousePanning?: boolean;
     calendar?: Calendar<InputDate, ParsedDate, InputDuration, Units>;
     theme?: Theme;
   }
 
   export const Timeline: (<InputDate, ParsedDate, InputDuration, Units>(
-    props: React.PropsWithChildren<TimelineProps<InputDate, ParsedDate, InputDuration, Units>>
+    props: React.PropsWithChildren<
+      TimelineProps<InputDate, ParsedDate, InputDuration, Units>
+    >
   ) => JSX.Element) & {
     StepBars: <InputDate, ParsedDate, InputDuration, Units>() => JSX.Element;
-    StepLabels: <InputDate, ParsedDate, InputDuration, Units>(props: StepLabelsProps) => JSX.Element;
-    CurrentDateBar: <InputDate, ParsedDate, InputDuration, Units>() => JSX.Element;
+    StepLabels: <InputDate, ParsedDate, InputDuration, Units>(
+      props: StepLabelsProps
+    ) => JSX.Element;
+    CurrentDateBar: <
+      InputDate,
+      ParsedDate,
+      InputDuration,
+      Units
+    >() => JSX.Element;
 
-    PanControl: <InputDate, ParsedDate, InputDuration, Units>(props: React.PropsWithChildren<PanControlProps<InputDuration>>) => JSX.Element;
-    ZoomControl: <InputDate, ParsedDate, InputDuration, Units>(props: React.PropsWithChildren<ZoomControlProps>) => JSX.Element;
+    PanControl: <InputDate, ParsedDate, InputDuration, Units>(
+      props: React.PropsWithChildren<PanControlProps<InputDuration>>
+    ) => JSX.Element;
+    ZoomControl: <InputDate, ParsedDate, InputDuration, Units>(
+      props: React.PropsWithChildren<ZoomControlProps>
+    ) => JSX.Element;
 
-    Row: <InputDate, ParsedDate, InputDuration, Units>(props: React.PropsWithChildren<RowProps>) => JSX.Element;
-    Period: <InputDate, ParsedDate, InputDuration, Units>(props: PeriodProps<InputDate>) => JSX.Element;
-    Event: <InputDate, ParsedDate, InputDuration, Units>(props: EventProps<InputDate>) => JSX.Element;
+    Row: <InputDate, ParsedDate, InputDuration, Units>(
+      props: React.PropsWithChildren<RowProps>
+    ) => JSX.Element;
+    Period: <InputDate, ParsedDate, InputDuration, Units>(
+      props: PeriodProps<InputDate>
+    ) => JSX.Element;
+    Event: <InputDate, ParsedDate, InputDuration, Units>(
+      props: EventProps<InputDate>
+    ) => JSX.Element;
   };
 
   // Interactions
 
-  interface InputTimelineInteractionContextContent<InputDate, ParsedDate, InputDuration, Units> {
+  interface InputTimelineInteractionContextContent<
+    InputDate,
+    ParsedDate,
+    InputDuration,
+    Units
+  > {
     calendar: Calendar<InputDate, ParsedDate, InputDuration, Units>;
     startDate: InputDate;
     endDate: InputDate;
@@ -93,11 +120,21 @@ declare module 'react-interactive-timeline' {
 
   export const interactions: {
     pan: <InputDate, ParsedDate, InputDuration, Units>(
-      timelineContext: InputTimelineInteractionContextContent<InputDate, ParsedDate, InputDuration, Units>,
+      timelineContext: InputTimelineInteractionContextContent<
+        InputDate,
+        ParsedDate,
+        InputDuration,
+        Units
+      >,
       duration: InputDuration
     ) => void;
     zoom: <InputDate, ParsedDate, InputDuration, Units>(
-      timelineContext: InputTimelineInteractionContextContent<InputDate, ParsedDate, InputDuration, Units>,
+      timelineContext: InputTimelineInteractionContextContent<
+        InputDate,
+        ParsedDate,
+        InputDuration,
+        Units
+      >,
       zoom: number
     ) => void;
   };
@@ -113,7 +150,14 @@ declare module 'react-interactive-timeline' {
   // Calendar
 
   type Locale = 'en' | 'fr';
-  type Units = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
+  type Units =
+    | 'millisecond'
+    | 'second'
+    | 'minute'
+    | 'hour'
+    | 'day'
+    | 'month'
+    | 'year';
 
   type InputDuration = {
     [U in Units]?: number;
@@ -133,28 +177,22 @@ declare module 'react-interactive-timeline' {
     className?: string;
   }
 
-  // Event
-
-  interface EventProps<InputDate> {
-    date: InputDate;
-    label: string;
-    className?: string;
-    color?: string;
-    component?: React.FunctionComponent<TimelinePeriodVariantProps>;
-    sizeRefs?: EventRefs;
-  }
-
   // Period
 
   type EventRefs = {
     containerRef: React.RefObject<HTMLDivElement>;
     barSizeRef: React.RefObject<HTMLDivElement>;
     labelSizeRef: React.RefObject<HTMLDivElement>;
-  }
+  };
 
-  type PeriodPosition = 'outside' | 'inside' | 'headOnly' | 'tailOnly' | 'cropped';
+  type PeriodPosition =
+    | 'outside'
+    | 'inside'
+    | 'headOnly'
+    | 'tailOnly'
+    | 'cropped';
 
-  export interface TimelinePeriodVariantProps {
+  interface PeriodVariantProps {
     label: string;
     sizeRefs: EventRefs;
     position: PeriodPosition;
@@ -169,8 +207,23 @@ declare module 'react-interactive-timeline' {
     label: string;
     className?: string;
     color?: string;
-    component?: React.FunctionComponent<TimelinePeriodVariantProps>;
+    component?: React.FunctionComponent<PeriodVariantProps>;
     sizeRefs?: EventRefs;
     fullHeight?: boolean;
+  }
+
+  namespace Timeline.Period {
+    export interface Props extends PeriodVariantProps {}
+  }
+
+  // Event
+
+  interface EventProps<InputDate> {
+    date: InputDate;
+    label: string;
+    className?: string;
+    color?: string;
+    component?: React.FunctionComponent<PeriodVariantProps>;
+    sizeRefs?: EventRefs;
   }
 }
