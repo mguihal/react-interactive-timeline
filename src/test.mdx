@@ -1,0 +1,34 @@
+---
+name: Hello world
+route: /
+menu: test
+---
+
+import { Playground } from 'docz'
+import { Timeline } from './index.ts';
+
+# Hello world
+
+Hello, I'm a mdx file!
+
+<Playground>
+  <Timeline
+    startDate={'2018-09-01'}
+    endDate={'2019-06-30'}
+    theme={{
+      backgroundColor: '#323232',
+      primaryColor: '#AAA',
+      secondaryColor: '#AA0',
+      tertiaryColor: '#A50',
+      eventColor: '#81996A',
+    }}
+  >
+    <Timeline.StepBars />
+    <Timeline.Row>
+      <Timeline.Event date="2018-12-12" label="Test" />
+    </Timeline.Row>
+    <Timeline.Row fixedHeight>
+      <Timeline.StepLabels />
+    </Timeline.Row>
+  </Timeline>
+</Playground>

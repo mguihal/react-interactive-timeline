@@ -1,0 +1,22 @@
+.period {
+  position: absolute;
+}
+
+.labelAbove {
+  white-space: nowrap;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+.labelAboveLabel {
+  width: fit-content;
+  line-height: 16px;
+  margin-bottom: 2px;
+}
+
+.labelAboveBar {
+  height: 15px;
+  border-radius: 3px;
+  width: 100%;
+}

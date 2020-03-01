@@ -1,0 +1,32 @@
+.stepLabels {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.stepLabelsPrimary, .stepLabelsSecondary {
+  height: 30px;
+}
+
+.stepLabel {
+  position: absolute;
+  text-align: center;
+  line-height: 30px;
+}
+
+.stepLabelsPrimary .stepLabel div {
+  width: 100%;
+  margin-left: -50%;
+}
+
+.stepLabelsSecondary .stepLabel {
+  overflow: hidden;
+  padding-left: 5px;
+  padding-right: 5px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}

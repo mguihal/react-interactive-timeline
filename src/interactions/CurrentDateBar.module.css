@@ -1,0 +1,14 @@
+.currentDateBar {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  border-left: solid 1px;
+  padding-top: 2px;
+}
+
+.currentDateBar div {
+  width: 100%;
+  margin-left: -50%;
+  text-align: center;
+}

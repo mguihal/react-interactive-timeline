@@ -1,0 +1,14 @@
+.stepBars {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}
+
+.stepBar {
+  position: absolute;
+  height: 100%;
+  border-left: dashed 1px;
+}
