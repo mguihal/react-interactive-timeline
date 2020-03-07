@@ -2,6 +2,8 @@
   "name": "react-interactive-timeline",
   "version": "0.3.0",
   "description": "Customizable and interactive timeline component for React",
+  "keywords": ["react", "timeline", "event", "time", "interactive", "story", "react-timeline"],
+  "homepage": "https://mguihal.github.io/react-interactive-timeline",
   "author": "mguihal",
   "license": "MIT",
   "repository": "mguihal/react-interactive-timeline",

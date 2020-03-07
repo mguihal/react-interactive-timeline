@@ -1,6 +1,6 @@
 # react-interactive-timeline
 
-> A timeline component for React
+A timeline component for React
 
 [![NPM](https://img.shields.io/npm/v/react-interactive-timeline.svg)](https://www.npmjs.com/package/react-interactive-timeline) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
