@@ -4,7 +4,7 @@
 
 [![NPM](https://img.shields.io/npm/v/react-interactive-timeline.svg)](https://www.npmjs.com/package/react-interactive-timeline) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-[![Timeline example](https://user-images.githubusercontent.com/303807/76136013-2e9c2000-602d-11ea-9307-54c322768828.png)]
+![Timeline example](https://user-images.githubusercontent.com/303807/76136013-2e9c2000-602d-11ea-9307-54c322768828.png)
 
 ## Install
 
