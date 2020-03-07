@@ -17,8 +17,7 @@ import defaultCalendar from './calendar';
 import useMousePanning from './interactions/useMousePanning';
 
 import CurrentDateBar from './interactions/CurrentDateBar';
-import PanControl from './interactions/PanControl';
-import ZoomControl from './interactions/ZoomControl';
+import Controls from './interactions/Controls';
 
 import StepBars from './Steps/StepBars';
 import StepLabels from './Steps/StepLabels';
@@ -271,11 +270,10 @@ Timeline.defaultProps = {
 };
 
 Timeline.StepBars = StepBars;
-Timeline.CurrentDateBar = CurrentDateBar;
 Timeline.StepLabels = StepLabels;
 
-Timeline.PanControl = PanControl;
-Timeline.ZoomControl = ZoomControl;
+Timeline.CurrentDateBar = CurrentDateBar;
+Timeline.Controls = Controls;
 
 Timeline.Row = TimelineRow;
 Timeline.Period = Period;

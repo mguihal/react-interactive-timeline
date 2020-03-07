@@ -9,10 +9,6 @@ const interactions = {
   zoom: zoomTimeline,
 };
 
-export { Timeline, interactions, calendar };
+export { interactions, calendar };
 
-export default {
-  Timeline,
-  interactions,
-  calendar,
-};
+export default Timeline;

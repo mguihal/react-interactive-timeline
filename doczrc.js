@@ -1,6 +1,7 @@
 import { css } from 'docz-plugin-css';
 
 export default {
+  base: '/react-interactive-timeline/',
   typescript: true,
   plugins: [
     css({

@@ -39,7 +39,13 @@ const StepLabels = <InputDate, ParsedDate, InputDuration, Units>(
   };
 
   return (
-    <div className={cx('stepLabels')}>
+    <div
+      className={cx('stepLabels')}
+      style={{
+        backgroundColor: themeContext.backgroundColor,
+        borderTopColor: themeContext.primaryColor,
+      }}
+    >
       <StepBars />
       {timelineContext &&
         timelineContext.stepLevels.map((stepLevel, stepLevelIndex) => (

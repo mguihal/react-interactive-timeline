@@ -1,0 +1,23 @@
+.controls {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 2;
+}
+
+.baseControl {
+  width: 30px;
+  height: 30px;
+  border: solid 1px;
+  border-radius: 15px;
+  margin: 2px;
+  font-size: 20px;
+}
+
+.baseControl:focus {
+  outline: none;
+}
+
+.baseControl span {
+  vertical-align: super;
+}

@@ -22,7 +22,7 @@
     "prepare": "npm run build",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
-    "docz:deploy": "docz:build && gh-pages -d .docz/dist"
+    "docz:deploy": "docz build && gh-pages -d .docz/dist"
   },
   "dependencies": {
     "classnames": "^2.2.6",

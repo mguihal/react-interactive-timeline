@@ -1,4 +1,9 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, {
+  useEffect,
+  useCallback,
+  useContext,
+  CSSProperties,
+} from 'react';
 import classnames from 'classnames';
 
 import { TimelineContext, TimelineContextContent } from './context';
@@ -8,7 +13,6 @@ import styles from './Timeline.module.css';
 type RowElement = {
   left: number;
   right: number;
-  width: number;
   height: number;
 };
 
@@ -16,7 +20,11 @@ interface Props {
   fixedHeight?: boolean;
   fullHeight?: boolean;
   className?: string;
+  style?: CSSProperties;
 }
+
+const SECURITY_MARGIN = 5; // px
+const VERTICAL_MARGIN = 20; // px
 
 const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
   props: React.PropsWithChildren<Props>
@@ -28,7 +36,7 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
     Units
   > | null>(TimelineContext);
 
-  const { fixedHeight, fullHeight, className } = props;
+  const { fixedHeight, fullHeight, className, style } = props;
 
   type EventRefs = {
     containerRef: React.RefObject<HTMLDivElement>;
@@ -64,9 +72,8 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
       );
 
     return {
-      left: getMin(e => e.left),
-      right: getMax(e => e.right),
-      width: getMax(e => e.width),
+      left: getMin(e => e.left) - SECURITY_MARGIN,
+      right: getMax(e => e.right) + SECURITY_MARGIN,
       height: getMax(e => e.height),
     };
   }, []);
@@ -128,7 +135,7 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
     refs.forEach((ref, refIndex) => {
       if (ref.containerRef.current) {
         ref.containerRef.current.style.top =
-          20 * lineByRefIndex[refIndex] +
+          VERTICAL_MARGIN * lineByRefIndex[refIndex] +
           linesHeight.reduce((acc, height, index) => {
             return acc + (index < lineByRefIndex[refIndex] ? height : 0);
           }, 0) +
@@ -138,7 +145,7 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
 
     if (rowRef && rowRef.current && !fixedHeight && !fullHeight) {
       rowRef.current.style.height =
-        20 * (lines.length - 1) +
+        VERTICAL_MARGIN * (lines.length - 1) +
         linesHeight.reduce((acc, height) => {
           return acc + height;
         }, 0) +
@@ -153,6 +160,7 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
         fullHeight ? styles.timelineRowFullHeight : null,
         className
       )}
+      style={style}
       ref={rowRef}
     >
       {React.Children.map(props.children, child => {

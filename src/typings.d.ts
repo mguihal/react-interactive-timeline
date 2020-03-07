@@ -65,7 +65,7 @@ declare module 'react-interactive-timeline' {
     theme?: Theme;
   }
 
-  export const Timeline: (<InputDate, ParsedDate, InputDuration, Units>(
+  const Timeline: (<InputDate, ParsedDate, InputDuration, Units>(
     props: React.PropsWithChildren<
       TimelineProps<InputDate, ParsedDate, InputDuration, Units>
     >
@@ -80,14 +80,9 @@ declare module 'react-interactive-timeline' {
       InputDuration,
       Units
     >() => JSX.Element;
-
-    PanControl: <InputDate, ParsedDate, InputDuration, Units>(
-      props: React.PropsWithChildren<PanControlProps<InputDuration>>
+    Controls: <InputDate, ParsedDate, InputDuration, Units>(
+      props: React.PropsWithChildren<ControlsProps<InputDuration>>
     ) => JSX.Element;
-    ZoomControl: <InputDate, ParsedDate, InputDuration, Units>(
-      props: React.PropsWithChildren<ZoomControlProps>
-    ) => JSX.Element;
-
     Row: <InputDate, ParsedDate, InputDuration, Units>(
       props: React.PropsWithChildren<RowProps>
     ) => JSX.Element;
@@ -98,6 +93,8 @@ declare module 'react-interactive-timeline' {
       props: EventProps<InputDate>
     ) => JSX.Element;
   };
+
+  export = Timeline;
 
   // Interactions
 
@@ -139,12 +136,15 @@ declare module 'react-interactive-timeline' {
     ) => void;
   };
 
-  interface PanControlProps<InputDuration> {
-    renderer: (pan: (duration: InputDuration) => void) => JSX.Element;
-  }
-
-  interface ZoomControlProps {
-    renderer: (zoom: (zoom: number) => void) => JSX.Element;
+  interface ControlsProps<InputDuration> {
+    panDuration?: InputDuration;
+    zoomFactor?: number;
+    className?: string;
+    style?: CSSProperties;
+    renderer?: (
+      pan: (panDuration: InputDuration) => void,
+      zoom: (zoomFactor: number) => void
+    ) => JSX.Element;
   }
 
   // Calendar
