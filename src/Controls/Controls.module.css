@@ -12,12 +12,12 @@
   border-radius: 15px;
   margin: 2px;
   font-size: 20px;
+  line-height: 20px;
+  background-color: var(--backgroundColor);
+  color: var(--primaryColor);
 }
 
 .baseControl:focus {
   outline: none;
-}
-
-.baseControl span {
-  vertical-align: super;
+  border-color: var(--secondaryColor);
 }

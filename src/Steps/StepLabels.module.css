@@ -6,11 +6,10 @@
   flex-direction: column;
   justify-content: center;
   position: relative;
-  border-top: 1px solid;
+  background-color: var(--backgroundColor);
 }
 
-.stepLabelsPrimary,
-.stepLabelsSecondary {
+.stepLevel {
   height: 30px;
 }
 
@@ -20,15 +19,35 @@
   line-height: 30px;
 }
 
-.stepLabelsPrimary .stepLabel div {
+.stepLevel-0 .stepLabel div {
   width: 100%;
   margin-left: -50%;
 }
 
-.stepLabelsSecondary .stepLabel {
+.stepLevel-0 .stepLabel {
+  color: var(--primaryColor);
+}
+
+.stepLevel-0 .stepLabel.important {
+  color: var(--secondaryColor);
+}
+
+.stepLevel-1 .stepLabel,
+.stepLevel-2 .stepLabel,
+.stepLevel-3 .stepLabel,
+.stepLevel-4 .stepLabel {
   overflow: hidden;
   padding-left: 5px;
   padding-right: 5px;
   box-sizing: border-box;
   white-space: nowrap;
+  color: var(--tertiaryColor);
+}
+
+.stepLevel-1 .stepLabel {
+  color: var(--secondaryColor);
+}
+
+.stepLevel-1 .stepLabel.important {
+  color: var(--tertiaryColor);
 }

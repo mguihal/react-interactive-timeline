@@ -1,9 +1,7 @@
-import React, { useContext, useState, useCallback, useEffect } from 'react';
 import classnames from 'classnames/bind';
-
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { TimelineContext, TimelineContextContent } from '../context';
 import { Theme, ThemeContext } from '../theme';
-
 import styles from './CurrentDateBar.module.css';
 
 const cx = classnames.bind(styles);
@@ -73,8 +71,6 @@ const CurrentDateBar = <InputDate, ParsedDate, InputDuration, Units>() => {
       className={cx('currentDateBar')}
       style={{
         left: offsetLeft + '%',
-        color: themeContext.primaryColor,
-        borderColor: themeContext.tertiaryColor,
       }}
     >
       <div>{currentDate && calendar.format(currentDate)}</div>

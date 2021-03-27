@@ -1,13 +1,5 @@
-import React, {
-  useEffect,
-  useCallback,
-  useContext,
-  CSSProperties,
-} from 'react';
 import classnames from 'classnames';
-
-import { TimelineContext, TimelineContextContent } from './context';
-
+import React, { CSSProperties, useCallback, useEffect } from 'react';
 import styles from './Timeline.module.css';
 
 type RowElement = {
@@ -29,54 +21,39 @@ const VERTICAL_MARGIN = 20; // px
 const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
   props: React.PropsWithChildren<Props>
 ) => {
-  useContext<TimelineContextContent<
-    InputDate,
-    ParsedDate,
-    InputDuration,
-    Units
-  > | null>(TimelineContext);
-
   const { fixedHeight, fullHeight, className, style } = props;
 
-  type EventRefs = {
-    containerRef: React.RefObject<HTMLDivElement>;
-    barSizeRef: React.RefObject<HTMLDivElement>;
-    labelSizeRef: React.RefObject<HTMLDivElement>;
-  };
-
   const rowRef = React.createRef<HTMLDivElement>();
-  const refs: EventRefs[] = [];
+  const refs: React.RefObject<HTMLDivElement>[][] = [];
 
-  const getEventBoundingBox = useCallback((ref: EventRefs) => {
-    const containerRef =
-      ref.containerRef.current &&
-      ref.containerRef.current.getBoundingClientRect();
-    const barSizeRef =
-      ref.barSizeRef.current && ref.barSizeRef.current.getBoundingClientRect();
-    const labelSizeRef =
-      ref.labelSizeRef.current &&
-      ref.labelSizeRef.current.getBoundingClientRect();
-
-    const getMax = (getAttribute: (e: ClientRect) => number) =>
-      Math.max(
-        containerRef ? getAttribute(containerRef) : Number.NEGATIVE_INFINITY,
-        barSizeRef ? getAttribute(barSizeRef) : Number.NEGATIVE_INFINITY,
-        labelSizeRef ? getAttribute(labelSizeRef) : Number.NEGATIVE_INFINITY
+  const getEventBoundingBox = useCallback(
+    (refs: React.RefObject<HTMLDivElement>[]) => {
+      const boundingBoxes = refs.map(
+        ref => ref.current && ref.current.getBoundingClientRect()
       );
 
-    const getMin = (getAttribute: (e: ClientRect) => number) =>
-      Math.min(
-        containerRef ? getAttribute(containerRef) : Number.POSITIVE_INFINITY,
-        barSizeRef ? getAttribute(barSizeRef) : Number.POSITIVE_INFINITY,
-        labelSizeRef ? getAttribute(labelSizeRef) : Number.POSITIVE_INFINITY
-      );
+      const getMax = (getAttribute: (e: ClientRect) => number) =>
+        Math.max(
+          ...boundingBoxes.map(ref =>
+            ref ? getAttribute(ref) : Number.NEGATIVE_INFINITY
+          )
+        );
 
-    return {
-      left: getMin(e => e.left) - SECURITY_MARGIN,
-      right: getMax(e => e.right) + SECURITY_MARGIN,
-      height: getMax(e => e.height),
-    };
-  }, []);
+      const getMin = (getAttribute: (e: ClientRect) => number) =>
+        Math.min(
+          ...boundingBoxes.map(ref =>
+            ref ? getAttribute(ref) : Number.POSITIVE_INFINITY
+          )
+        );
+
+      return {
+        left: getMin(e => e.left) - SECURITY_MARGIN,
+        right: getMax(e => e.right) + SECURITY_MARGIN,
+        height: getMax(e => e.height),
+      };
+    },
+    []
+  );
 
   useEffect(() => {
     const lines: RowElement[][] = [[]];
@@ -133,8 +110,8 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
     });
 
     refs.forEach((ref, refIndex) => {
-      if (ref.containerRef.current) {
-        ref.containerRef.current.style.top =
+      if (ref[0] && ref[0].current) {
+        ref[0].current.style.top =
           VERTICAL_MARGIN * lineByRefIndex[refIndex] +
           linesHeight.reduce((acc, height, index) => {
             return acc + (index < lineByRefIndex[refIndex] ? height : 0);
@@ -165,11 +142,7 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
     >
       {React.Children.map(props.children, child => {
         if (React.isValidElement(child)) {
-          const sizeRefs = {
-            containerRef: React.createRef<HTMLDivElement>(),
-            barSizeRef: React.createRef<HTMLDivElement>(),
-            labelSizeRef: React.createRef<HTMLDivElement>(),
-          };
+          const sizeRefs: React.RefObject<HTMLDivElement>[] = [];
 
           refs.push(sizeRefs);
           return React.cloneElement(child, { sizeRefs, fullHeight });
@@ -179,4 +152,4 @@ const TimelineRow = <InputDate, ParsedDate, InputDuration, Units>(
   );
 };
 
-export default TimelineRow;
+export default React.memo(TimelineRow);

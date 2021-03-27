@@ -11,6 +11,7 @@
   width: fit-content;
   line-height: 16px;
   margin: auto;
+  color: var(--eventColor);
 }
 
 .labelAboveLabelContainer {
@@ -24,4 +25,5 @@
   height: 10px;
   border-radius: 100%;
   width: 10px;
+  background-color: var(--eventColor);
 }

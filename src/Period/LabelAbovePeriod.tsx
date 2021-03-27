@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react';
-
 import { PeriodVariantProps } from './Period';
-
 import styles from './Period.module.css';
 
 const LabelAbovePeriod = (props: PeriodVariantProps) => {
   const { sizeRefs, label, position, color } = props;
+
+  const labelRef = React.useRef<HTMLDivElement>(null);
+  const barRef = React.useRef<HTMLDivElement>(null);
+
+  sizeRefs.push(labelRef);
+  sizeRefs.push(barRef);
 
   const labelLeftOffset =
     position === 'tailOnly'
@@ -14,21 +18,22 @@ const LabelAbovePeriod = (props: PeriodVariantProps) => {
 
   useEffect(() => {
     if (
-      sizeRefs &&
-      sizeRefs.labelSizeRef.current &&
-      sizeRefs.barSizeRef.current &&
+      labelRef &&
+      barRef &&
+      labelRef.current &&
+      barRef.current &&
       position === 'tailOnly'
     ) {
-      const labelWidth = sizeRefs.labelSizeRef.current.offsetWidth;
-      const barWidth = sizeRefs.barSizeRef.current.offsetWidth;
+      const labelWidth = labelRef.current.offsetWidth;
+      const barWidth = barRef.current.offsetWidth;
 
       if (labelWidth > barWidth) {
-        sizeRefs.labelSizeRef.current.style.marginLeft = '0%';
+        labelRef.current.style.marginLeft = '0%';
       } else {
         const diff = labelWidth - ((100 - labelLeftOffset) / 100) * barWidth;
 
         if (diff > 0) {
-          sizeRefs.labelSizeRef.current.style.marginLeft =
+          labelRef.current.style.marginLeft =
             labelLeftOffset - (diff / barWidth) * 100 + '%';
         }
       }
@@ -39,14 +44,14 @@ const LabelAbovePeriod = (props: PeriodVariantProps) => {
     <div className={styles.labelAbove}>
       <div
         className={styles.labelAboveLabel}
-        ref={sizeRefs ? sizeRefs.labelSizeRef : null}
+        ref={labelRef}
         style={{ marginLeft: labelLeftOffset + '%', color }}
       >
         {label}
       </div>
       <div
         className={styles.labelAboveBar}
-        ref={sizeRefs ? sizeRefs.barSizeRef : null}
+        ref={barRef}
         style={{ backgroundColor: color }}
       />
     </div>

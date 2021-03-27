@@ -12,3 +12,25 @@
   height: 100%;
   border-left: dashed 1px;
 }
+
+.stepBar-level0 {
+  border-color: var(--primaryColor);
+}
+
+.stepBar-level0.important {
+  border-color: var(--secondaryColor);
+}
+
+.stepBar-level1 {
+  border-color: var(--secondaryColor);
+}
+
+.stepBar-level1.important {
+  border-color: var(--tertiaryColor);
+}
+
+.stepBar-level2,
+.stepBar-level3,
+.stepBar-level4 {
+  border-color: var(--tertiaryColor);
+}

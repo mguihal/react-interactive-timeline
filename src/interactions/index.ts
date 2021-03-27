@@ -158,7 +158,16 @@ export function zoomParsedTimeline<InputDate, ParsedDate, InputDuration, Units>(
   const { calendar, startDate, endDate } = timelineContext;
   const duration = calendar.diff(endDate, startDate);
 
-  const offset = duration / 2 / (zoom < 1 ? zoom / 2 : zoom);
+  //const offset = duration / 2 / (zoom < 1 ? zoom / 2 : zoom); // FIXME: c'est inversé (z10 < z1.1, et z1 impossible)
+
+  const offset = zoom <= 0 ? 0 : (duration - duration / zoom) / 2;
+
+  // -------- d = 8, z = 2 -> d = 4, donc offset = (8-(8/2)) / 2 = 2
+  //          d = 8, z = 8 -> d = 1, offset = (8 - (8/8)) / 2 = 3.5
+  //          d = 8, z = 1 -> d = 8, offset = (8 - 8/1) / 2 = 0
+  //          d = 8, z = 0.5 -> d = 16, offset = (8 - 8/0.5) / 2 = -4
+  //          d = 8, z = 0 -> d = x, offset = (8 - 8/0) / 2 = E
+  //          d = 8, z = -2 -> d= x, offset = (8 - 8/-2) / 2 = 6
 
   checkMinMaxBounds({
     ...timelineContext,

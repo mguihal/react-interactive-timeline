@@ -1,20 +1,10 @@
-import React, { useContext } from 'react';
 import classnames from 'classnames/bind';
-
+import React, { useContext } from 'react';
 import { TimelineContext, TimelineContextContent } from '../context';
-import { Theme, ThemeContext } from '../theme';
-
 import LabelAbovePeriod from './LabelAbovePeriod';
-
 import styles from './Period.module.css';
 
 const cx = classnames.bind(styles);
-
-export type EventRefs = {
-  containerRef: React.RefObject<HTMLDivElement>;
-  barSizeRef: React.RefObject<HTMLDivElement>;
-  labelSizeRef: React.RefObject<HTMLDivElement>;
-};
 
 type PeriodPosition =
   | 'outside'
@@ -25,11 +15,10 @@ type PeriodPosition =
 
 export interface PeriodVariantProps {
   label: string;
-  sizeRefs: EventRefs;
+  sizeRefs: React.RefObject<HTMLDivElement>[];
   position: PeriodPosition;
-  containerLeft: number;
-  containerWidth: number;
-  color: string;
+  color?: string;
+  [customProp: string]: any;
 }
 
 interface Props<InputDate> {
@@ -39,14 +28,14 @@ interface Props<InputDate> {
   className?: string;
   color?: string;
   component?: React.FunctionComponent<PeriodVariantProps>;
-  sizeRefs?: EventRefs;
+  sizeRefs?: React.RefObject<HTMLDivElement>[];
   fullHeight?: boolean;
+  [customProp: string]: any;
 }
 
 const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(
   props: Props<InputDate>
 ) => {
-  const themeContext = useContext<Theme>(ThemeContext);
   const timelineContext = useContext<TimelineContextContent<
     InputDate,
     ParsedDate,
@@ -67,6 +56,7 @@ const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(
     component,
     sizeRefs,
     fullHeight,
+    ...rest
   } = props;
   const {
     startDate: timelineStartDate,
@@ -77,8 +67,20 @@ const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(
   const parsedStartDate = calendar.parse(startDate);
   const parsedEndDate = calendar.parse(endDate);
 
-  if (!calendar.isBefore(parsedStartDate, parsedEndDate)) {
-    console.error('The endDate is before the startDate prop for the period');
+  if (
+    startDate !== endDate &&
+    !calendar.isBefore(parsedStartDate, parsedEndDate)
+  ) {
+    console.error(
+      `The endDate is before the startDate prop for the period "${label}"`
+    );
+    return null;
+  }
+
+  if (
+    calendar.isBefore(parsedEndDate, timelineStartDate) ||
+    calendar.isBefore(timelineEndDate, parsedStartDate)
+  ) {
     return null;
   }
 
@@ -108,10 +110,10 @@ const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(
       ? 'cropped'
       : 'outside';
 
-  let DefaultPeriod: React.FunctionComponent<PeriodVariantProps> = LabelAbovePeriod;
+  let PeriodComponent: React.FunctionComponent<PeriodVariantProps> = LabelAbovePeriod;
 
   if (component) {
-    DefaultPeriod = component;
+    PeriodComponent = component;
   }
 
   const customStyle: React.CSSProperties = {
@@ -123,19 +125,24 @@ const TimelinePeriod = <InputDate, ParsedDate, InputDuration, Units>(
     customStyle.height = '100%';
   }
 
+  const containerRef = React.createRef<HTMLDivElement>();
+
+  sizeRefs.push(containerRef);
+
   return (
     <div
-      ref={sizeRefs.containerRef}
+      ref={containerRef}
       className={cx('period', className)}
       style={customStyle}
     >
-      <DefaultPeriod
+      <PeriodComponent
         label={label}
+        startDate={startDate}
+        endDate={endDate}
         sizeRefs={sizeRefs}
         position={periodPosition}
-        containerLeft={offsetLeft}
-        containerWidth={width}
-        color={color || themeContext.eventColor}
+        color={color}
+        {...rest}
       />
     </div>
   );

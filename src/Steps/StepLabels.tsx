@@ -1,17 +1,12 @@
-import React, { useContext } from 'react';
 import classnames from 'classnames/bind';
-
+import React, { useContext } from 'react';
 import { TimelineContext, TimelineContextContent } from '../context';
 import { Theme, ThemeContext } from '../theme';
-import StepBars from './StepBars';
-
 import styles from './StepLabels.module.css';
 
 const cx = classnames.bind(styles);
 
-interface Props {
-  className?: string;
-}
+interface Props {}
 
 const StepLabels = <InputDate, ParsedDate, InputDuration, Units>(
   props: Props
@@ -24,38 +19,17 @@ const StepLabels = <InputDate, ParsedDate, InputDuration, Units>(
     Units
   > | null>(TimelineContext);
 
-  const getColor = (stepLevel: number, isImportant: boolean) => {
-    if (stepLevel === 0) {
-      return isImportant
-        ? themeContext.secondaryColor
-        : themeContext.primaryColor;
-    } else if (stepLevel === 1) {
-      return isImportant
-        ? themeContext.tertiaryColor
-        : themeContext.secondaryColor;
-    } else {
-      return themeContext.tertiaryColor;
-    }
-  };
-
   return (
-    <div
-      className={cx('stepLabels')}
-      style={{
-        backgroundColor: themeContext.backgroundColor,
-        borderTopColor: themeContext.primaryColor,
-      }}
-    >
-      <StepBars />
+    <div className={cx('stepLabels', themeContext.stepLabels)}>
       {timelineContext &&
         timelineContext.stepLevels.map((stepLevel, stepLevelIndex) => (
           <div
             key={`stepLevel-${stepLevelIndex}`}
             className={cx(
-              stepLevelIndex === 0
-                ? 'stepLabelsPrimary'
-                : 'stepLabelsSecondary',
-              `stepLevel-${stepLevelIndex}`
+              'stepLevel',
+              `stepLevel-${stepLevelIndex}`,
+              themeContext.stepLevel,
+              themeContext[`stepLevel-${stepLevelIndex}`]
             )}
           >
             {stepLevel.steps.map((step, stepIndex) => {
@@ -77,20 +51,17 @@ const StepLabels = <InputDate, ParsedDate, InputDuration, Units>(
                 <div
                   key={`stepLabel${stepLevelIndex}-${stepIndex}`}
                   className={cx(
-                    props.className,
                     'stepLabel',
                     `stepLabel-${step.scale}-${step.unit}`,
                     timelineContext.calendar.isImportantStep(step)
-                      ? 'stepLabelImportant'
-                      : ''
+                      ? 'important'
+                      : '',
+                    themeContext.stepLabel,
+                    themeContext[`stepLabel-${step.scale}-${step.unit}`]
                   )}
                   style={{
                     left: left + '%',
                     width: width + '%',
-                    color: getColor(
-                      stepLevelIndex,
-                      timelineContext.calendar.isImportantStep(step)
-                    ),
                   }}
                 >
                   <div>

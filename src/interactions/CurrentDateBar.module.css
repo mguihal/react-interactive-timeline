@@ -6,6 +6,8 @@
   border-left: solid 1px;
   padding-top: 2px;
   z-index: 1;
+  color: var(--primaryColor);
+  border-color: var(--tertiaryColor);
 }
 
 .currentDateBar div {

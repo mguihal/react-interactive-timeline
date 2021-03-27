@@ -1,11 +1,7 @@
 import React, { useContext } from 'react';
-
 import { TimelineContext, TimelineContextContent } from '../context';
-import { Theme, ThemeContext } from '../theme';
-
-import Period, { PeriodVariantProps, EventRefs } from './Period';
-
 import LabelAboveEvent from './LabelAboveEvent';
+import Period, { PeriodVariantProps } from './Period';
 
 interface Props<InputDate> {
   date: InputDate;
@@ -13,13 +9,13 @@ interface Props<InputDate> {
   className?: string;
   color?: string;
   component?: React.FunctionComponent<PeriodVariantProps>;
-  sizeRefs?: EventRefs;
+  sizeRefs?: React.RefObject<HTMLDivElement>[];
+  [customProp: string]: any;
 }
 
 const TimelineEvent = <InputDate, ParsedDate, InputDuration, Units>(
   props: Props<InputDate>
 ) => {
-  const themeContext = useContext<Theme>(ThemeContext);
   const timelineContext = useContext<TimelineContextContent<
     InputDate,
     ParsedDate,
@@ -27,22 +23,16 @@ const TimelineEvent = <InputDate, ParsedDate, InputDuration, Units>(
     Units
   > | null>(TimelineContext);
 
-  const { label, date, className, color, component, sizeRefs } = props;
+  const { label, date, className, color, component, sizeRefs, ...rest } = props;
 
   if (!timelineContext) {
     return null;
   }
 
-  const parsedDate = timelineContext.calendar.parse(date);
-  const endDate = timelineContext.calendar.add(
-    parsedDate,
-    timelineContext.calendar.getMinimumDuration()
-  );
-
-  let DefaultPeriod: React.FunctionComponent<PeriodVariantProps> = LabelAboveEvent;
+  let PeriodComponent: React.FunctionComponent<PeriodVariantProps> = LabelAboveEvent;
 
   if (component) {
-    DefaultPeriod = component;
+    PeriodComponent = component;
   }
 
   return (
@@ -50,10 +40,11 @@ const TimelineEvent = <InputDate, ParsedDate, InputDuration, Units>(
       label={label}
       className={className}
       startDate={date}
-      endDate={endDate}
-      component={DefaultPeriod}
+      endDate={date}
+      component={PeriodComponent}
       sizeRefs={sizeRefs}
-      color={color || themeContext.eventColor}
+      color={color}
+      {...rest}
     />
   );
 };

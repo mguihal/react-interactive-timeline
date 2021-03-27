@@ -1,19 +1,21 @@
 import React from 'react';
 
-export interface Theme {
-  backgroundColor: string;
-  primaryColor: string;
-  secondaryColor: string;
-  tertiaryColor: string;
-  eventColor: string;
-}
+export type Theme = {
+  theme?: string;
+  timeline?: string;
 
-export const defaultTheme: Theme = {
-  backgroundColor: '#323232',
-  primaryColor: '#AAA',
-  secondaryColor: '#AA0',
-  tertiaryColor: '#A50',
-  eventColor: '#81996A',
-};
+  stepLabels?: string;
 
-export const ThemeContext = React.createContext<Theme>(defaultTheme);
+  stepLevel?: string;
+  stepLevel0?: string;
+  stepLevel1?: string;
+  stepLevel2?: string;
+  stepLevel3?: string;
+
+  stepLabel?: string;
+
+  controls?: string;
+  baseControl?: string;
+} & { [key: string]: string };
+
+export const ThemeContext = React.createContext<Theme>({});

@@ -1,10 +1,9 @@
-import React, { useContext, CSSProperties } from 'react';
 import classnames from 'classnames/bind';
-
+import PropTypes from 'prop-types';
+import React, { CSSProperties, useContext } from 'react';
 import { TimelineContext, TimelineContextContent } from '../context';
+import { panParsedTimeline, zoomParsedTimeline } from '../interactions';
 import { Theme, ThemeContext } from '../theme';
-import { panParsedTimeline, zoomParsedTimeline } from '.';
-
 import styles from './Controls.module.css';
 
 const cx = classnames.bind(styles);
@@ -12,7 +11,6 @@ const cx = classnames.bind(styles);
 interface Props<InputDuration> {
   panDuration?: InputDuration;
   zoomFactor?: number;
-  className?: string;
   style?: CSSProperties;
   renderer?: (
     pan: (panDuration: InputDuration) => void,
@@ -30,12 +28,8 @@ const BaseControl = (props: BaseControlProps) => {
 
   return (
     <button
-      className={cx('baseControl')}
+      className={cx('baseControl', themeContext.baseControl)}
       onClick={props.callback}
-      style={{
-        backgroundColor: themeContext.backgroundColor,
-        color: themeContext.primaryColor,
-      }}
     >
       <span>{props.label}</span>
     </button>
@@ -53,7 +47,7 @@ const Controls = <InputDate, ParsedDate, InputDuration, Units>(
     Units
   > | null>(TimelineContext);
 
-  const { panDuration, zoomFactor, className, style, renderer } = props;
+  const { panDuration, zoomFactor, style, renderer } = props;
 
   if (!timelineContext) {
     return null;
@@ -72,13 +66,7 @@ const Controls = <InputDate, ParsedDate, InputDuration, Units>(
   }
 
   return (
-    <div className={cx('controls', className)} style={style}>
-      <style>{`
-        .${cx('baseControl')}:focus {
-          border-color: ${themeContext.secondaryColor};
-        }
-      `}</style>
-
+    <div className={cx('controls', themeContext.controls)} style={style}>
       {parsedPanDuration && (
         <BaseControl
           label="‹"
@@ -110,12 +98,19 @@ const Controls = <InputDate, ParsedDate, InputDuration, Units>(
         <BaseControl
           label="-"
           callback={() => {
-            zoomParsedTimeline(timelineContext, -zoomFactor);
+            zoomParsedTimeline(timelineContext, 1 / zoomFactor);
           }}
         />
       )}
     </div>
   );
+};
+
+Controls.propTypes = {
+  panDuration: PropTypes.any,
+  zoomFactor: PropTypes.number,
+  style: PropTypes.object,
+  renderer: PropTypes.func,
 };
 
 export default Controls;

@@ -13,10 +13,12 @@
   width: fit-content;
   line-height: 16px;
   margin-bottom: 2px;
+  color: var(--eventColor);
 }
 
 .labelAboveBar {
   height: 15px;
   border-radius: 3px;
   width: 100%;
+  background-color: var(--eventColor);
 }

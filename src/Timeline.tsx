@@ -1,32 +1,24 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
-
+import defaultCalendar from './calendar';
 import {
-  TimelineContext,
-  TimelineContextContent,
   Calendar,
   CalendarStep,
   DisplayStep,
+  TimelineContext,
+  TimelineContextContent,
 } from './context';
-
-import { Theme, ThemeContext, defaultTheme } from './theme';
-
-import defaultCalendar from './calendar';
-
-import useMousePanning from './interactions/useMousePanning';
-
+import Controls from './Controls/Controls';
 import CurrentDateBar from './interactions/CurrentDateBar';
-import Controls from './interactions/Controls';
-
-import StepBars from './Steps/StepBars';
-import StepLabels from './Steps/StepLabels';
-
-import TimelineRow from './TimelineRow';
+import useMousePanning from './interactions/useMousePanning';
 import Event from './Period/Event';
 import Period from './Period/Period';
-
+import StepBars from './Steps/StepBars';
+import StepLabels from './Steps/StepLabels';
+import { Theme, ThemeContext } from './theme';
 import styles from './Timeline.module.css';
+import TimelineRow from './TimelineRow';
 
 const cx = classnames.bind(styles);
 
@@ -42,7 +34,7 @@ interface Props<InputDate, ParsedDate, InputDuration, Units>
   maxDuration?: InputDuration;
   mousePanning: boolean;
   calendar: Calendar<InputDate, ParsedDate, InputDuration, Units>;
-  theme: Theme;
+  classes: Theme;
 }
 
 const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
@@ -61,7 +53,7 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
     minDuration,
     maxDuration,
     mousePanning,
-    theme,
+    classes,
     children,
     ...rest
   } = props;
@@ -246,10 +238,9 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
   }
 
   return (
-    <ThemeContext.Provider value={theme}>
+    <ThemeContext.Provider value={classes}>
       <div
-        className={cx('timeline', className)}
-        style={{ backgroundColor: theme.backgroundColor }}
+        className={cx('timeline', className, classes.theme, classes.timeline)}
         ref={containerRef}
         {...rest}
       >
@@ -266,7 +257,7 @@ Timeline.defaultProps = {
   stepMinWidth: '40px',
   mousePanning: true,
   calendar: defaultCalendar(),
-  theme: defaultTheme,
+  classes: {},
 };
 
 Timeline.StepBars = StepBars;

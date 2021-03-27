@@ -1,11 +1,15 @@
 import React from 'react';
-
-import { PeriodVariantProps } from './Period';
-
 import styles from './Event.module.css';
+import { PeriodVariantProps } from './Period';
 
 const LabelAboveEvent = (props: PeriodVariantProps) => {
   const { sizeRefs, label, color } = props;
+
+  const labelRef = React.useRef<HTMLDivElement>(null);
+  const barRef = React.useRef<HTMLDivElement>(null);
+
+  sizeRefs.push(labelRef);
+  sizeRefs.push(barRef);
 
   return (
     <div className={styles.labelAbove}>
@@ -13,7 +17,7 @@ const LabelAboveEvent = (props: PeriodVariantProps) => {
         <div
           className={styles.labelAboveLabel}
           style={{ color }}
-          ref={sizeRefs ? sizeRefs.labelSizeRef : null}
+          ref={labelRef}
         >
           {label}
         </div>
@@ -21,7 +25,7 @@ const LabelAboveEvent = (props: PeriodVariantProps) => {
       <div
         className={styles.labelAboveBar}
         style={{ backgroundColor: color }}
-        ref={sizeRefs ? sizeRefs.barSizeRef : null}
+        ref={barRef}
       />
     </div>
   );

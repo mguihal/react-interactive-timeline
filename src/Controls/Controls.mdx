@@ -1,0 +1,103 @@
+---
+name: Timeline.Controls
+route: /components/controls
+menu: Components
+---
+
+import { Playground } from 'docz'
+import Timeline, { calendar } from '../index.ts';
+
+# Timeline.Controls
+
+This component displays basic control buttons for pan and zoom the timeline.
+
+## Props
+
+| Prop | Type | Required | Default |
+|:---:|:---:|:---:|:---:|
+| **panDuration** | InputDuration | no | null |
+| **zoomFactor** | number | no | null |
+| **renderer** | function | no | null |
+| **className** | string | no | null |
+| **style** | CSSProperties | no | null |
+
+### **panDuration**
+
+Indicates the duration moved when clicking on panning buttons. Required to display default panning buttons. The duration can be built by creating an object with any calendar unit as keys. Examples for standard calendar :
+
+`{ month: 6 }`
+
+`{ hour: 1, minute: 30 }`
+
+`{ year: 10 }`
+
+### **zoomFactor**
+
+Indicates the zoom factor when clicking on zoom buttons. A factor of 1 will do nothing. A factor of 2 will reduce by 2 the timeline duration. A factor of 0.5 will increase by 2 the timeline duration. Required to display default zoom buttons.
+
+### **renderer**
+
+Define this function to render a custom component. This function takes 2 arguments : a pan function, and a zoom function. See below for an example.
+
+### **className**
+
+An optional class name to apply to this component.
+
+### **style**
+
+An optional style to apply to this component.
+
+## Examples
+
+Example with panDuration set to 6 months and zoom factor set to 2 :
+
+<Playground>
+  <Timeline
+    startDate={'1966-01-01'}
+    endDate={'1974-01-01'}
+  >
+    <Timeline.Controls panDuration={{ month: 6 }} zoomFactor={2} />
+    <Timeline.StepBars />
+
+    <Timeline.Row>
+      <Timeline.Event date="1969-07-16" label="Apollo 11" />
+    </Timeline.Row>
+
+    <Timeline.Row fixedHeight>
+      <Timeline.StepLabels />
+    </Timeline.Row>
+  </Timeline>
+</Playground>
+
+Example with custom renderer :
+
+<Playground>
+  {() => {
+    const customRenderer = (pan, zoom) => (
+      <div>
+        <button onClick={() => pan({month: -1})}>Previous month</button>
+        <button onClick={() => pan({month: 1})}>Next month</button>
+        <button onClick={() => zoom(2)}>Zoom in</button>
+        <button onClick={() => zoom(1/2)}>Zoom out</button>
+      </div>
+    );
+
+    return (
+      <Timeline
+        startDate={'1966-01-01'}
+        endDate={'1974-01-01'}
+      >
+        <Timeline.Controls renderer={customRenderer} />
+        <Timeline.StepBars />
+
+        <Timeline.Row>
+          <Timeline.Event date="1969-07-16" label="Apollo 11" />
+        </Timeline.Row>
+
+        <Timeline.Row fixedHeight>
+          <Timeline.StepLabels />
+        </Timeline.Row>
+      </Timeline>
+    );
+  }}
+</Playground>

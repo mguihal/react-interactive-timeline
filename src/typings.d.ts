@@ -38,16 +38,18 @@ declare module 'react-interactive-timeline' {
 
   // Timeline
 
-  interface StepLabelsProps {
-    className?: string;
-  }
+  interface StepLabelsProps {}
 
-  interface Theme {
-    backgroundColor: string;
-    primaryColor: string;
-    secondaryColor: string;
-    tertiaryColor: string;
-    eventColor: string;
+  interface Classes {
+    theme?: string;
+    timeline?: string;
+
+    stepLabels?: string;
+    stepLevel?: string;
+    stepLabel?: string;
+
+    controls?: string;
+    baseControl?: string;
   }
 
   interface TimelineProps<InputDate, ParsedDate, InputDuration, Units>
@@ -62,7 +64,7 @@ declare module 'react-interactive-timeline' {
     maxDuration?: InputDuration;
     mousePanning?: boolean;
     calendar?: Calendar<InputDate, ParsedDate, InputDuration, Units>;
-    theme?: Theme;
+    classes?: Classes;
   }
 
   const Timeline: (<InputDate, ParsedDate, InputDuration, Units>(
@@ -178,13 +180,6 @@ declare module 'react-interactive-timeline' {
   }
 
   // Period
-
-  type EventRefs = {
-    containerRef: React.RefObject<HTMLDivElement>;
-    barSizeRef: React.RefObject<HTMLDivElement>;
-    labelSizeRef: React.RefObject<HTMLDivElement>;
-  };
-
   type PeriodPosition =
     | 'outside'
     | 'inside'
@@ -194,11 +189,10 @@ declare module 'react-interactive-timeline' {
 
   interface PeriodVariantProps {
     label: string;
-    sizeRefs: EventRefs;
+    sizeRefs: React.RefObject<HTMLDivElement>[];
     position: PeriodPosition;
-    containerLeft: number;
-    containerWidth: number;
     color?: string;
+    [customProp: string]: any;
   }
 
   interface PeriodProps<InputDate> {
@@ -208,8 +202,9 @@ declare module 'react-interactive-timeline' {
     className?: string;
     color?: string;
     component?: React.FunctionComponent<PeriodVariantProps>;
-    sizeRefs?: EventRefs;
+    sizeRefs?: React.RefObject<HTMLDivElement>[];
     fullHeight?: boolean;
+    [customProp: string]: any;
   }
 
   namespace Timeline.Period {
@@ -217,13 +212,13 @@ declare module 'react-interactive-timeline' {
   }
 
   // Event
-
   interface EventProps<InputDate> {
     date: InputDate;
     label: string;
     className?: string;
     color?: string;
     component?: React.FunctionComponent<PeriodVariantProps>;
-    sizeRefs?: EventRefs;
+    sizeRefs?: React.RefObject<HTMLDivElement>[];
+    [customProp: string]: any;
   }
 }
