@@ -1,13 +1,13 @@
 import classnames from 'classnames/bind';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ReactResizeDetector from 'react-resize-detector';
+import { useResizeDetector } from 'react-resize-detector';
 import defaultCalendar from './calendar';
 import {
   Calendar,
   CalendarStep,
   DisplayStep,
   TimelineContext,
-  TimelineContextContent,
+  TimelineContextContent
 } from './context';
 import Controls from './Controls/Controls';
 import CurrentDateBar from './interactions/CurrentDateBar';
@@ -59,7 +59,7 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
   } = props;
 
   const containerRef = React.createRef<HTMLDivElement>();
-  const [containerWidth, setContainerWidth] = useState(1);
+  const { width: containerWidth } = useResizeDetector({ targetRef: containerRef });
 
   const [parsedStartDate, setParsedStartDate] = useState(
     calendar.parse(startDate)
@@ -112,7 +112,7 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
       const maxSteps =
         parsedStepMinWidth.unit === '%'
           ? 100 / parsedStepMinWidth.value
-          : containerWidth / parsedStepMinWidth.value;
+          : (containerWidth || 1) / parsedStepMinWidth.value;
 
       const stepMinDuration = duration / maxSteps;
 
@@ -142,10 +142,6 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
     },
     [calendar, computeStepsPosition, containerWidth, getParsedStepMinWidth]
   );
-
-  const onResize = useCallback((width: number) => {
-    setContainerWidth(width);
-  }, []);
 
   useEffect(() => {
     if (startDate !== previousDateValues.current.startDate) {
@@ -244,7 +240,6 @@ const Timeline = <InputDate, ParsedDate, InputDuration, Units>(
         ref={containerRef}
         {...rest}
       >
-        <ReactResizeDetector handleWidth onResize={onResize} />
         <TimelineContext.Provider value={timelineContext}>
           {children}
         </TimelineContext.Provider>
